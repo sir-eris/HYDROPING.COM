@@ -43,7 +43,7 @@ function PaymentForm({ email }) {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000/order/thank-you",
+        return_url: `${process.env.NEXT_PUBLIC_API_URL}/order/thank-you`,
         receipt_email: email,
       },
     });
@@ -319,13 +319,16 @@ export default function StripeOrder() {
     };
 
     // call backend
-    const res = await fetch("/api/order/client", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...order,
-      }),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/order/client`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...order,
+        }),
+      }
+    );
     const data = await res.json();
 
     if (data.error) {
