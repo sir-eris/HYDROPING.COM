@@ -623,6 +623,8 @@ export default function StripeOrder() {
             ) : null}
           </div>
 
+          {/* {clientSecretError && <p className="font-bold text-sm text-red-600 text-center mx-auto w-fit">Please follow the instructions and try again.</p>} */}
+
           {/* payment */}
           {clientSecret != null ? (
             <>

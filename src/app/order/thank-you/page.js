@@ -170,7 +170,10 @@ export default async function SuccessPage({ searchParams }) {
               <FaApple color={"#FFFFFF"} className="w-6 h-6" />
               Download on App Store
             </a>
-            <p className="text-[10px] text-gray-500">We'll remind you again once <br/>your order is processed.</p>
+            <p className="text-[10px] text-gray-500">
+              We&apos;ll remind you again once <br />
+              your order is processed.
+            </p>
           </div>
         </div>
       </main>

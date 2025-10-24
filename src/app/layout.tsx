@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -42,7 +43,7 @@ export default function RootLayout({
         {/* logo */}
       <header className="fixed z-50 top-0 w-full">
         <div className="w-fit mx-auto mt-6 px-4 text-center flex justify-center items-center bg-white/15 backdrop-blur-xs rounded-4xl border border-white/5">
-          <a href="/" className="flex items-center">
+          <Link href="/" className="flex items-center">
           <Image
             src="/logo.png"
             alt="HydroPing Logo"
@@ -50,7 +51,7 @@ export default function RootLayout({
             height={50}
           />
           <p className="font-black text-lg -ml-8">HydroPing</p>
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -58,14 +59,14 @@ export default function RootLayout({
 
         <footer className="fixed z-50 bottom-0 left-0 w-full">
           <div className="w-fit mx-auto mb-6 p-4 row-start-3 flex gap-[24px] flex-wrap items-center justify-center bg-white/15 backdrop-blur-xs rounded-4xl border border-white/5">
-          <a href="/" className="flex items-center">
+          <Link href="/" className="flex items-center">
           <Image
             src="/logo.png"
             alt="HydroPing Logo"
             width={30}
             height={30}
           />
-          </a>
+          </Link>
           {/* <a
             className="flex items-center gap-2 hover:underline hover:underline-offset-4"
             href="/setup-guide"
