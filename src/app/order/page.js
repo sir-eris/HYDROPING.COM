@@ -8,10 +8,16 @@ import {
   useElements,
   Elements,
 } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+import dynamic from "next/dynamic";
+
+const AddressAutofill = dynamic(
+  () => import("@mapbox/search-js-react").then((mod) => mod.AddressAutofill),
+  { ssr: false }
+);
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
+import { loadStripe } from "@stripe/stripe-js";
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
@@ -151,48 +157,15 @@ export default function StripeOrder() {
   ]);
   const [address, setAddress] = useState({
     line1: "",
+    line2: "",
     city: "",
     state: "",
     postal_code: "",
     country: "",
     formatted_address: ""
   });
-  const [line2, setLine2] = useState("");
   const [addressError, setAddressError] = useState("");
-  const autoAddressInputRef = useRef(null);
 
-  // auto address handling
-  useEffect(() => {
-    // Wait until google script is loaded
-    if (!window.google || !window.google.maps?.places) return;
-
-    const autocomplete = new window.google.maps.places.Autocomplete(
-      autoAddressInputRef.current,
-      {
-        types: ["address"],
-        componentRestrictions: { country: "us" },
-        fields: ["address_components", "formatted_address"],
-      }
-    );
-
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      setAddress(prev => {
-        return {
-          ...prev,
-          line1:
-            place.address_components[0].long_name +
-            ", " +
-            place.address_components[1].long_name,
-          city: place.address_components[3].long_name,
-          state: place.address_components[5].short_name,
-          postal_code: place.address_components[7].long_name,
-          country: place.address_components[6].short_name,
-          formatted_address: place.formatted_address,
-        };
-      });
-    });
-  }, []);
 
   const onAddItem = (colorId) => {
     setColors((prev) =>
@@ -213,23 +186,40 @@ export default function StripeOrder() {
     setClientSecret(null);
   };
 
-  const handleAddressChange = (e) => {
+  const handleAddressLine2Change = (e) => {
     setAddress(prev => {
       return {
-        line1: "",
-        city: "",
-        state: "",
-        postal_code: "",
-        country: "",
-        formatted_address: "",
-        formatted_address: e.target.value,
+        ...prev,
+        line2: e.target.value.trim(),
       };
     })
-  
-    setAddressError("");
   }
 
+  const handleAutofillRetrieve = (response) => {
+    setAddressError("");
+    
+    const selectedAddress = response.features[0]?.properties;
+    setAddress({
+      line1: selectedAddress.address_line1,
+      line2: selectedAddress.address_line2,
+      city: selectedAddress.address_level2,
+      state: selectedAddress.address_level1,
+      postal_code: selectedAddress.postcode,
+      country: selectedAddress.country_code,
+      formatted_address: selectedAddress.full_address,
+    });
+  };
+
   const handleChangeAddress = () => {
+    setAddress({
+      line1: "",
+      line2: "",
+      city: "",
+      state: "",
+      postal_code: "",
+      country: "",
+      formatted_address: "",
+    });
     setClientSecret(null);
     setIsLoading(false);
     setTaxAmount(null);
@@ -309,11 +299,14 @@ export default function StripeOrder() {
     setIsLoading(true);
 
     // prep order items
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { formatted_address, ..._address } = address;
     const order = {
       items: colors
         .filter((item) => item.quantity > 0)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .map(({ uiColor, ...rest }) => rest),
-      address: ((({ formatted_address, ...rest }) => ({ ...rest, line2: line2.slice(0, 20) }))(address)), // crude filtering over line2 
+      address: _address,
       promo,
       currency: PAYMENT_CURRENCY.name,
     };
@@ -552,24 +545,46 @@ export default function StripeOrder() {
 
                 <div className="xl:flex gap-x-6">
                   <div className="w-full xl:w-4/5">
-                    <Script
-                      id="google-maps"
-                      src={`https://maps.googleapis.com/maps/api/js?key=${STRING}&libraries=places`}
-                      strategy="afterInteractive"
-                      onLoad={() => {
-                        window.dispatchEvent(new Event("google-maps-loaded"));
-                      }}
-                    />
-
                     <div className="w-full h-24 ">
                       <p className="text-sm">Shipping Address</p>
-                      <input
-                        ref={autoAddressInputRef}
-                        value={address.formatted_address}
-                        onChange={handleAddressChange}
-                        type="text"
-                        className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
-                      />
+                      <form>
+                        <AddressAutofill
+                          onRetrieve={handleAutofillRetrieve}
+                          accessToken="pk.eyJ1Ijoic2lyLWVyaXMiLCJhIjoiY21oNWV5ZzMwMDFrdDJsb29kdW8yNW9wayJ9.3p8YGIkFNWRUIY2d5KlLIg"
+                        >
+                          <input
+                            type="text"
+                            name="address-1"
+                            autoComplete="address-line1"
+                            className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
+                          />
+                          <input
+                            type="text"
+                            name="address-2"
+                            autoComplete="address-line2"
+                            hidden
+                          />
+                          <input
+                            type="text"
+                            name="city"
+                            autoComplete="address-level2"
+                            hidden
+                          />
+                          <input
+                            type="text"
+                            name="state"
+                            autoComplete="address-level1"
+                            hidden
+                          />
+                          <input
+                            type="text"
+                            name="zip"
+                            autoComplete="postal-code"
+                            hidden
+                          />
+                        </AddressAutofill>
+                      </form>
+
                       {addressError?.length ? (
                         <p className="text-red-500 font-bold text-xs text-left mb-4">
                           {addressError}
@@ -586,8 +601,8 @@ export default function StripeOrder() {
                       id="line2"
                       name="line2"
                       type="text"
-                      value={line2}
-                      onChange={(e) => setLine2(e.target.value.trim())}
+                      value={address.line2}
+                      onChange={handleAddressLine2Change}
                       className="mb-4 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
                     />
                   </div>
@@ -601,7 +616,6 @@ export default function StripeOrder() {
                 <div className="flex justify-between items-baseline">
                   <p>
                     {address.formatted_address}
-                    {line2?.length ? ", (#" + line2 + ")" : null}
                   </p>
                   <button
                     onClick={handleChangeAddress}

@@ -12,8 +12,6 @@ export async function POST(req) {
     const data = await req.json();
     const { items, address, promo, currency } = data;
 
-    console.log(data)
-
     // TODO verify and retrieve promo code %
     let discountPercent = 0;
     if (promo) {
