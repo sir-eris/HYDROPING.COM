@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import "server-only";
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
@@ -77,7 +79,7 @@ export async function POST(req) {
 export async function OPTIONS() {
   const origin = req.headers.get("origin") || "*";
   const res = NextResponse.json(null, { status: 204 });
-  
+
   res.headers.set("Access-Control-Allow-Origin", origin);
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.headers.set(
