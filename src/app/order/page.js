@@ -312,16 +312,13 @@ export default function StripeOrder() {
     };
 
     // call backend
-    const res = await fetch(
-      `/api/order/client`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...order,
-        }),
-      }
-    );
+    const res = await fetch("https://hydroping.com/api/order/client", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...order,
+      }),
+    });
     const data = await res.json();
 
     if (data.error) {
