@@ -313,7 +313,7 @@ export default function StripeOrder() {
 
     // call backend
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/order/client`,
+      `/api/order/client`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
