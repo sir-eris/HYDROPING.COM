@@ -20,11 +20,7 @@ export async function POST(req) {
       }
     }
 
-    // let amount = 0;
     const amount = items.reduce((sum, item) => { return sum += item.amount*item.quantity }, 0)
-    // for (const i of items) {
-    //   amount += i.amount * i.quantity;
-    // }
 
     const buildLineItem = (item) => {
       return {
@@ -78,7 +74,10 @@ export async function OPTIONS() {
   const res = NextResponse.json(null, { status: 204 });
 
   // Set CORS headers for preflight requests
-  res.headers.set("Access-Control-Allow-Origin", "*"); // Allow all origins
+  res.headers.set(
+    "Access-Control-Allow-Origin",
+    process.env.NEXT_PUBLIC_API_URL
+  );
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.headers.set(
     "Access-Control-Allow-Headers",

@@ -324,6 +324,8 @@ export default function StripeOrder() {
     );
     const data = await res.json();
 
+    console.log("data", data);
+
     if (data.error) {
       setIsLoading(false);
       setClientSecretError(true);
