@@ -491,7 +491,7 @@ export default function StripeOrder() {
                       id="name"
                       name="name"
                       type="text"
-                      pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
+                      // pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
                       value={name}
                       onChange={handleNameChange}
                       className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
@@ -532,7 +532,7 @@ export default function StripeOrder() {
                     id="email"
                     name="email"
                     type="email"
-                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                    // pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                     value={email}
                     onChange={handleEmailChange}
                     className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
@@ -565,25 +565,25 @@ export default function StripeOrder() {
                             type="text"
                             name="address-2"
                             autoComplete="address-line2"
-                            hidden
+                            className="invisible"
                           />
                           <input
                             type="text"
                             name="city"
                             autoComplete="address-level2"
-                            hidden
+                            className="invisible"
                           />
                           <input
                             type="text"
                             name="state"
                             autoComplete="address-level1"
-                            hidden
+                            className="invisible"
                           />
                           <input
                             type="text"
                             name="zip"
                             autoComplete="postal-code"
-                            hidden
+                            className="invisible"
                           />
                         </AddressAutofill>
                       </form>
