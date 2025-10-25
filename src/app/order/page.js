@@ -1,6 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import Script from "next/script";
+import { useState } from "react";
 import Head from "next/head";
 import {
   PaymentElement,
@@ -25,7 +24,6 @@ const PAYMENT_CURRENCY = {
   name: "usd",
   symbol: "$",
 };
-const STRING = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY;
 
 function PaymentForm({ email }) {
   const stripe = useStripe();
