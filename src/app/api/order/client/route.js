@@ -76,10 +76,8 @@ export async function POST(req) {
 }
 
 export async function OPTIONS() {
-  const origin = req.headers.get("origin") || "*";
-  const res = NextResponse.json(null, { status: 204 });
-
-  res.headers.set("Access-Control-Allow-Origin", origin);
+  const res = new Response(null, { status: 204 });
+  res.headers.set("Access-Control-Allow-Origin", "*");
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.headers.set(
     "Access-Control-Allow-Headers",
@@ -88,3 +86,4 @@ export async function OPTIONS() {
 
   return res;
 }
+
