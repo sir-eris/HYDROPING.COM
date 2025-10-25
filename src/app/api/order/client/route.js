@@ -6,10 +6,12 @@ import { NextResponse } from "next/server";
 
 // receives order details and returns stripe client secret for that transaction, tax amount, discount percentage, and final order total
 export async function POST(req) {
+  console.log("STRIPE_SECRET_KEY exists?", !!process.env.STRIPE_SECRET_KEY);
+  
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2025-09-30.clover",
   });
-  
+
   try {
     const data = await req.json();
     const { items, address, promo, currency } = data;
