@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 // receives order details and returns stripe client secret for that transaction, tax amount, discount percentage, and final order total
 export async function POST(req) {
-  console.log(req);
+  return NextResponse.json({ ok: true });
   try {
     const data = await req.json();
     const { items, address, promo, currency } = data;

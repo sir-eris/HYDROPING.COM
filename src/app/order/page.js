@@ -565,25 +565,25 @@ export default function StripeOrder() {
                             type="text"
                             name="address-2"
                             autoComplete="address-line2"
-                            className="invisible"
+                            className="invisible w-0 h-0"
                           />
                           <input
                             type="text"
                             name="city"
                             autoComplete="address-level2"
-                            className="invisible"
+                            className="invisible w-0 h-0"
                           />
                           <input
                             type="text"
                             name="state"
                             autoComplete="address-level1"
-                            className="invisible"
+                            className="invisible w-0 h-0"
                           />
                           <input
                             type="text"
                             name="zip"
                             autoComplete="postal-code"
-                            className="invisible"
+                            className="invisible w-0 h-0"
                           />
                         </AddressAutofill>
                       </form>
