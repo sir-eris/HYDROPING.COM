@@ -74,16 +74,16 @@ export async function POST(req) {
   }
 }
 
-export async function OPTIONS() {
-  const origin = req.headers.get("origin") || "*";
-  const res = NextResponse.json(null, { status: 204 });
+// export async function OPTIONS() {
+//   const origin = req.headers.get("origin") || "*";
+//   const res = NextResponse.json(null, { status: 204 });
   
-  res.headers.set("Access-Control-Allow-Origin", origin);
-  res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.headers.set(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
+//   res.headers.set("Access-Control-Allow-Origin", origin);
+//   res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+//   res.headers.set(
+//     "Access-Control-Allow-Headers",
+//     "Content-Type, Authorization"
+//   );
 
-  return res;
-}
+//   return res;
+// }
