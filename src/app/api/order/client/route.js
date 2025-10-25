@@ -8,6 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 // receives order details and returns stripe client secret for that transaction, tax amount, discount percentage, and final order total
 export async function POST(req) {
+  console.log(req);
   try {
     const data = await req.json();
     const { items, address, promo, currency } = data;
@@ -20,7 +21,9 @@ export async function POST(req) {
       }
     }
 
-    const amount = items.reduce((sum, item) => { return sum += item.amount*item.quantity }, 0)
+    const amount = items.reduce((sum, item) => {
+      return (sum += item.amount * item.quantity);
+    }, 0);
 
     const buildLineItem = (item) => {
       return {
@@ -39,7 +42,8 @@ export async function POST(req) {
       line_items: items.map((item) => buildLineItem(item)),
     });
 
-    let total = amount * (1 - discountPercent) + taxCalculation.tax_amount_exclusive;
+    let total =
+      amount * (1 - discountPercent) + taxCalculation.tax_amount_exclusive;
 
     // Create PaymentIntent as soon as the page loads
     const { client_secret: clientSecret } = await stripe.paymentIntents.create({
@@ -71,13 +75,10 @@ export async function POST(req) {
 }
 
 export async function OPTIONS() {
+  const origin = req.headers.get("origin") || "*";
   const res = NextResponse.json(null, { status: 204 });
-
-  // Set CORS headers for preflight requests
-  res.headers.set(
-    "Access-Control-Allow-Origin",
-    process.env.NEXT_PUBLIC_API_URL
-  );
+  
+  res.headers.set("Access-Control-Allow-Origin", origin);
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.headers.set(
     "Access-Control-Allow-Headers",
