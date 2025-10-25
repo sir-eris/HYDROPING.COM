@@ -26,7 +26,7 @@ export default function Home() {
           <br />
 
           {/* summary info */}
-          <div className="flex flex-col md:flex-row justify-around w-4/5 mx-auto font-medium bg-white/15 backdrop-blur-xs rounded-4xl border border-white/5">
+          <div className="flex flex-col md:flex-row justify-around w-4/5 mx-auto px-4 font-medium bg-white/15 backdrop-blur-xs rounded-4xl border border-white/5 shadow/5">
             <h3 className="mb-4 py-6 border-b w-fit mx-auto px-4 border-gray-300 md:m-0 md:border-0 md:px-0">Invisibly Small</h3>
             <div className="hidden md:block h-6 w-[1px] rounded-full bg-gray-600 mt-6"></div>
             <h3 className="mb-4 py-6 border-b w-fit mx-auto px-4 border-gray-300 md:m-0 md:border-0 md:px-0">Lasts 5+ Years</h3>
