@@ -491,6 +491,7 @@ export default function StripeOrder() {
                       id="name"
                       name="name"
                       type="text"
+                      pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
                       value={name}
                       onChange={handleNameChange}
                       className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
@@ -509,7 +510,8 @@ export default function StripeOrder() {
                     <input
                       id="phone"
                       name="phone"
-                      type="text"
+                      type="tel"
+                      pattern="^\+?[0-9\s\-\(\)]{7,15}$"
                       value={phone}
                       onChange={handlePhoneChange}
                       className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
@@ -530,6 +532,7 @@ export default function StripeOrder() {
                     id="email"
                     name="email"
                     type="email"
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                     value={email}
                     onChange={handleEmailChange}
                     className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
@@ -614,9 +617,7 @@ export default function StripeOrder() {
                   {name}, {phone}
                 </p>
                 <div className="flex justify-between items-baseline">
-                  <p>
-                    {address.formatted_address}
-                  </p>
+                  <p>{address.formatted_address}</p>
                   <button
                     onClick={handleChangeAddress}
                     className="underline underline-offset-4 hover:no-underline font-semibold text-blue-500 text-sm"
