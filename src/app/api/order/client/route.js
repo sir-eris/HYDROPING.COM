@@ -1,18 +1,25 @@
-export const runtime = "nodejs";
-
 import "server-only";
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 
-console.log("STRIPE_SECRET_KEY exists?", !!process.env.STRIPE_SECRET_KEY);
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-09-30.clover",
-});
+export const runtime = "nodejs";
 
 // receives order details and returns stripe client secret for that transaction, tax amount, discount percentage, and final order total
 export async function POST(req) {
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error("STRIPE_SECRET_KEY not defined");
+      return NextResponse.json(
+        { error: "Stripe key not configured on server" },
+        { status: 500 }
+      );
+    }
+
+    // Initialize Stripe at runtime
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2025-09-30.clover",
+    });
+
     const data = await req.json();
     const { items, address, promo, currency } = data;
 
