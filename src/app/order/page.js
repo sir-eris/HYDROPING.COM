@@ -49,7 +49,7 @@ function PaymentForm({ email }) {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: `${process.env.NEXT_PUBLIC_API_URL}/order/thank-you`,
+        return_url: "https://hydroping.com/order/thank-you",
         receipt_email: email,
       },
     });
