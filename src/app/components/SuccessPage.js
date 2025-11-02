@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Image from "next/image";
 import { FaApple } from "react-icons/fa";
+// import Image from "next/image";
 // import iOSAppThumbnail from "../../../public/iOSApp-512.png";
 
 export default function SuccessPage() {
@@ -14,8 +14,8 @@ export default function SuccessPage() {
   useEffect(() => {
     const confirmPayment = async () => {
       const paymentIntentId = searchParams.get("payment_intent");
-      if (!paymentIntentId) return;
-      window.history.replaceState({}, "", "/order/thank-you");
+
+      if (paymentIntentId) window.history.replaceState({}, "", "/order/thank-you"); else return router.push("/");
 
       try {
         const res = await fetch(
@@ -31,12 +31,13 @@ export default function SuccessPage() {
         if (data && data.error) {
           return router.push("/");
         }
-        if ((data && !data.paymentIntent) || !data.paymentIntent.id)
+        if (data && (!data.paymentIntent || !data.paymentIntent.id)) {
           return router.push("/");
+        }
 
         setPaymentIntent(data.paymentIntent);
       } catch {
-        router.push("/");
+        return router.push("/");
       }
     };
 
