@@ -45,8 +45,8 @@ export default function Home() {
           <div className="w-fit mx-auto bg-white/15 backdrop-blur-xs rounded-2xl border border-white/5">
             <div className="flex justify-center w-fit mx-auto text-blue-400 text-xl font-bold mb-6 gap-x-12">
               {/* <h3 className="underline underline-offset-8 hover:no-underline"><Link href="/about">Watch Ad</Link></h3> */}
-              {/* <a href="/order" className="underline underline-offset-8 hover:no-underline">Order Yours</a> */}
-              <p className="underline underline-offset-8 hover:no-underline">Coming Soon</p>
+              <a href="/order" className="underline underline-offset-8 hover:no-underline">Order Yours</a>
+              {/* <p className="underline underline-offset-8 hover:no-underline">Coming Soon</p> */}
             </div>
             <div className="">
               <p className="text-xs text-gray-600 text-center">1.5% contributed to removing CO₂ from atmosphere.</p>

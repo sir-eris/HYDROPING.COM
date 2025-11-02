@@ -310,28 +310,46 @@ export default function StripeOrder() {
     };
 
     // call backend
-    const res = await fetch("https://hydroping.com/api/order/client", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...order,
-      }),
-    });
-    const data = await res.json();
+    try {
+      const res = await fetch(
+        "https://q15ur4emu9.execute-api.us-east-2.amazonaws.com/default/getStripeCS",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: [
+              { id: "item1", amount: 1000, quantity: 1, taxCode: "txcd_001" },
+            ],
+            address: {
+              line1: "123 Main St",
+              city: "New York",
+              country: "US",
+            },
+            promo: "PLANTS26",
+            currency: "usd",
+          }),
+        }
+      );
+      console.log("Client Secret Response:", res);
+      const data = await res.json();
 
-    if (data.error) {
+      if (data.error) {
+        setIsLoading(false);
+        setClientSecretError(true);
+        return;
+      }
+
+      setTaxAmount(data.taxAmount);
+      setDiscountPercent(data.discountPercent);
+      setOrderTotal(data.total);
+      setTimeout(() => {
+        setClientSecret(data.clientSecret);
+        setIsLoading(false);
+      }, 1000);
+    } catch (error) {
+      console.log("Error fetching client secret:", error);
       setIsLoading(false);
-      setClientSecretError(true);
-      return;
     }
-
-    setTaxAmount(data.taxAmount);
-    setDiscountPercent(data.discountPercent);
-    setOrderTotal(data.total);
-    setTimeout(() => {
-      setClientSecret(data.clientSecret);
-      setIsLoading(false);
-    }, 1000);
   };
 
   return (
