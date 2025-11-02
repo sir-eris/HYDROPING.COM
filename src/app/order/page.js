@@ -213,6 +213,7 @@ export default function StripeOrder() {
     }
 
     setIsLoading(true);
+    setClientSecretError(false);
 
     // prep order items
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -239,7 +240,6 @@ export default function StripeOrder() {
           }),
         }
       );
-      console.log("Client Secret Response:", res);
       const data = await res.json();
 
       if (data.error) {
@@ -578,7 +578,7 @@ export default function StripeOrder() {
                   stripe={stripePromise}
                   options={{ appearance: { theme: "flat" }, clientSecret }}
                 >
-                  <PaymentForm email />
+                  <PaymentForm email={email} />
                 </Elements>
               </div>
             </>
@@ -624,6 +624,7 @@ function PaymentForm({ email }) {
     if (error.type === "card_error" || error.type === "validation_error") {
       setMessage(error.message);
     } else {
+      console.log(error);
       setMessage("An unexpected error occurred.");
     }
 
@@ -642,22 +643,13 @@ function PaymentForm({ email }) {
       />
       <br />
       <br />
-      {/* Show any error or success messages */}
-      {message && (
-        <div
-          id="payment-message"
-          className="text-center mb-6 bg-black/5 rounded-full py-2 px-6 border-2 border-gray-300 w-fit mx-auto text-sm"
-        >
-          {message}
-        </div>
-      )}
 
       <button
         disabled={isLoading || !stripe || !elements}
         id="submit"
-        className="w-full text-center"
+        className="block w-fit mx-auto text-center"
       >
-        <span id="button-text" className="">
+        <span id="button-text" className="block mx-auto">
           {isLoading ? (
             <div className="spinner" id="spinner"></div>
           ) : (
@@ -667,6 +659,17 @@ function PaymentForm({ email }) {
           )}
         </span>
       </button>
+
+      <br />
+      {/* Show any error or success messages */}
+      {message && (
+        <div
+          id="payment-message"
+          className="text-center mb-6 text-red-500 font-black w-fit mx-auto text-sm"
+        >
+          Oh! {message}
+        </div>
+      )}
     </form>
   );
 }

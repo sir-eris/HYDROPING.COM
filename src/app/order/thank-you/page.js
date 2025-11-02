@@ -98,6 +98,7 @@ export default async function SuccessPage({ searchParams }) {
   if (!paymentIntent) redirect("/");
 
   const { status } = paymentIntent;
+  
 
   return (
     <div className="relative">
@@ -130,7 +131,7 @@ export default async function SuccessPage({ searchParams }) {
                   <span className="font-medium text-gray-700">Status</span>
                   <span className="text-gray-900">{status}</span>
                 </div>
-                <div className="flex justify-between mb-2">
+                {/* <div className="flex justify-between mb-2">
                   <span className="font-medium text-gray-700">
                     Payment Details
                   </span>
@@ -144,7 +145,7 @@ export default async function SuccessPage({ searchParams }) {
                       View
                     </a>
                   </span>
-                </div>
+                </div> */}
               </div>
             </div>
           )}
