@@ -399,7 +399,9 @@ export default function StripeOrder() {
               </div>
             </div>
           </div>
+
           <hr className="border-gray-300 w-4/5 lg:w-1/2 2xl:w-5/12 rounded-2xl mx-auto mb-5" />
+
           {/* shipping details */}
           <div className="w-4/5 lg:w-1/2 2xl:w-5/12 mx-auto mb-5">
             <p className="mb-6 font-semibold">Shipping Information</p>
@@ -549,17 +551,20 @@ export default function StripeOrder() {
               </div>
             )}
           </div>
+
           {/* submit */}
           <div className="mx-auto w-fit text-center">
             {clientSecret == null ? (
               <button
                 className="font-bold text-xl text-green-500 underline underline-offset-4 hover:no-underline"
                 onClick={!isLoading ? getClientSecret : null}
+                disabled={isLoading}
               >
                 {isLoading ? "..." : "Continue to Pay"}
               </button>
             ) : null}
           </div>
+
           {clientSecretError && (
             <>
             <br />
@@ -569,7 +574,7 @@ export default function StripeOrder() {
               </p>
             </>
           )}
-          /{/* payment */}
+          {/* payment */}
           {clientSecret != null ? (
             <>
               <hr className="border-gray-300 w-4/5 lg:w-1/2 2xl:w-5/12 rounded-2xl mx-auto mb-5" />
@@ -650,13 +655,9 @@ function PaymentForm({ email }) {
         className="block w-fit mx-auto text-center"
       >
         <span id="button-text" className="block mx-auto">
-          {isLoading ? (
-            <div className="spinner" id="spinner"></div>
-          ) : (
-            <p className="font-bold text-xl text-green-500 underline underline-offset-4 hover:no-underline">
-              Pay now
-            </p>
-          )}
+          <p className="font-bold text-xl text-green-500 underline underline-offset-4 hover:no-underline">
+            {isLoading ? "..." : "Pay now"}
+          </p>
         </span>
       </button>
 
