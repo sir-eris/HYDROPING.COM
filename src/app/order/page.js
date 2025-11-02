@@ -25,88 +25,6 @@ const PAYMENT_CURRENCY = {
   symbol: "$",
 };
 
-function PaymentForm({ email }) {
-  const stripe = useStripe();
-  const elements = useElements();
-
-  const [message, setMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!stripe || !elements) {
-      // Stripe.js hasn't yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      return;
-    }
-
-    setIsLoading(true);
-
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        // Make sure to change this to your payment completion page
-        return_url: "https://hydroping.com/order/thank-you",
-        receipt_email: email,
-      },
-    });
-
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message);
-    } else {
-      setMessage("An unexpected error occurred.");
-    }
-
-    setIsLoading(false);
-  };
-
-  const paymentElementOptions = { layout: "accordion" };
-
-  return (
-    <form id="payment-form" onSubmit={handleSubmit}>
-      <p className="mb-4 font-semibold">Payment Information</p>
-      <PaymentElement
-        id="payment-element"
-        className="px-4"
-        options={paymentElementOptions}
-      />
-      <br />
-      <br />
-      {/* Show any error or success messages */}
-      {message && (
-        <div
-          id="payment-message"
-          className="text-center mb-6 bg-black/5 rounded-full py-2 px-6 border-2 border-gray-300 w-fit mx-auto text-sm"
-        >
-          {message}
-        </div>
-      )}
-
-      <button
-        disabled={isLoading || !stripe || !elements}
-        id="submit"
-        className="w-full text-center"
-      >
-        <span id="button-text" className="">
-          {isLoading ? (
-            <div className="spinner" id="spinner"></div>
-          ) : (
-            <p className="font-bold text-xl text-green-500 underline underline-offset-4 hover:no-underline">
-              Pay now
-            </p>
-          )}
-        </span>
-      </button>
-    </form>
-  );
-}
-
 export default function StripeOrder() {
   const [clientSecret, setClientSecret] = useState(null);
   const [clientSecretError, setClientSecretError] = useState(false);
@@ -276,7 +194,7 @@ export default function StripeOrder() {
       setPhoneError(""); // clear error
     }
 
-    if (Object.values(address).some(value => value.trim() === "")) {
+    if (Object.entries(address).some(([key, value]) => key !== "line2" && value.trim() === "")) {
       setAddressError("Please confirm a formatted option.");
     } else {
       setAddressError("");
@@ -349,6 +267,7 @@ export default function StripeOrder() {
     } catch (error) {
       console.log("Error fetching client secret:", error);
       setIsLoading(false);
+      setClientSecretError(true);
     }
   };
 
@@ -489,9 +408,7 @@ export default function StripeOrder() {
               </div>
             </div>
           </div>
-
           <hr className="border-gray-300 w-4/5 lg:w-1/2 2xl:w-5/12 rounded-2xl mx-auto mb-5" />
-
           {/* shipping details */}
           <div className="w-4/5 lg:w-1/2 2xl:w-5/12 mx-auto mb-5">
             <p className="mb-6 font-semibold">Shipping Information</p>
@@ -602,7 +519,7 @@ export default function StripeOrder() {
                       </form>
 
                       {addressError?.length ? (
-                        <p className="text-red-500 font-bold text-xs text-left mb-4">
+                        <p className="text-gray-500 font-bold text-xs text-left mb-4">
                           {addressError}
                         </p>
                       ) : (
@@ -641,7 +558,6 @@ export default function StripeOrder() {
               </div>
             )}
           </div>
-
           {/* submit */}
           <div className="mx-auto w-fit text-center">
             {clientSecret == null ? (
@@ -653,10 +569,16 @@ export default function StripeOrder() {
               </button>
             ) : null}
           </div>
-
-          {/* {clientSecretError && <p className="font-bold text-sm text-red-600 text-center mx-auto w-fit">Please follow the instructions and try again.</p>} */}
-
-          {/* payment */}
+          {clientSecretError && (
+            <>
+            <br />
+              <p className="font-bold text-sm text-red-600 text-center mx-auto w-fit">
+                Please confirm your information is correct. <br />
+                Be sure to select a formatted address option.
+              </p>
+            </>
+          )}
+          /{/* payment */}
           {clientSecret != null ? (
             <>
               <hr className="border-gray-300 w-4/5 lg:w-1/2 2xl:w-5/12 rounded-2xl mx-auto mb-5" />
@@ -673,5 +595,87 @@ export default function StripeOrder() {
         </main>
       </div>
     </>
+  );
+}
+
+function PaymentForm({ email }) {
+  const stripe = useStripe();
+  const elements = useElements();
+
+  const [message, setMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      // Stripe.js hasn't yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      return;
+    }
+
+    setIsLoading(true);
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        // Make sure to change this to your payment completion page
+        return_url: "https://hydroping.com/order/thank-you",
+        receipt_email: email,
+      },
+    });
+
+    // This point will only be reached if there is an immediate error when
+    // confirming the payment. Otherwise, your customer will be redirected to
+    // your `return_url`. For some payment methods like iDEAL, your customer will
+    // be redirected to an intermediate site first to authorize the payment, then
+    // redirected to the `return_url`.
+    if (error.type === "card_error" || error.type === "validation_error") {
+      setMessage(error.message);
+    } else {
+      setMessage("An unexpected error occurred.");
+    }
+
+    setIsLoading(false);
+  };
+
+  const paymentElementOptions = { layout: "accordion" };
+
+  return (
+    <form id="payment-form" onSubmit={handleSubmit}>
+      <p className="mb-4 font-semibold">Payment Information</p>
+      <PaymentElement
+        id="payment-element"
+        className="px-4"
+        options={paymentElementOptions}
+      />
+      <br />
+      <br />
+      {/* Show any error or success messages */}
+      {message && (
+        <div
+          id="payment-message"
+          className="text-center mb-6 bg-black/5 rounded-full py-2 px-6 border-2 border-gray-300 w-fit mx-auto text-sm"
+        >
+          {message}
+        </div>
+      )}
+
+      <button
+        disabled={isLoading || !stripe || !elements}
+        id="submit"
+        className="w-full text-center"
+      >
+        <span id="button-text" className="">
+          {isLoading ? (
+            <div className="spinner" id="spinner"></div>
+          ) : (
+            <p className="font-bold text-xl text-green-500 underline underline-offset-4 hover:no-underline">
+              Pay now
+            </p>
+          )}
+        </span>
+      </button>
+    </form>
   );
 }
