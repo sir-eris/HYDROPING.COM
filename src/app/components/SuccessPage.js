@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { FaApple } from "react-icons/fa";
-import iOSAppThumbnail from "../../../public/iOSApp-512.png";
+// import iOSAppThumbnail from "../../../public/iOSApp-512.png";
 
 export default function SuccessPage() {
   const searchParams = useSearchParams();
@@ -92,8 +92,8 @@ export default function SuccessPage() {
               <p className="mb-6 capitalize text-lg font-bold">
                 2. Next, download the App
               </p>
-              <Image
-                src={iOSAppThumbnail}
+              <img
+                src="/iOSApp-512.png"
                 width={256}
                 height={256}
                 alt="HydroPing_iOS_App_Icon_512"
