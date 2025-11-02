@@ -8,7 +8,6 @@ git push origin main
 # --- 2. Build and export Next.js ---
 npm install
 npm run build
-npm run export
 
 # --- 3. Sync `out/` folder to S3 ---
 aws s3 sync out/ s3://hydroping.com/ --delete --acl public-read
