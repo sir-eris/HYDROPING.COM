@@ -22,12 +22,6 @@ import iOSAppThumbnail from "../../../../public/iOSApp-512.png";
 // };
 
 export default function SuccessPage() {
-  // const { payment_intent: paymentIntentId } = await searchParams;
-  // if (!paymentIntentId) redirect("/");
-  // const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-  // if (!paymentIntent) redirect("/");
-  // const { status } = paymentIntent;
-
   const searchParams = useSearchParams();
   const router = useRouter();
   const [paymentIntent, setPaymentIntent] = useState(null);
@@ -35,13 +29,10 @@ export default function SuccessPage() {
   useEffect(() => {
     const confirmPayment = async () => {
       const paymentIntentId = searchParams.get("payment_intent");
-      if (!paymentIntentId) return router.push("/");
-      
-      const cleanUrl = "/order/thank-you";
-      window.history.replaceState({}, "", cleanUrl);
+      if (!paymentIntentId) return
+      window.history.replaceState({}, "", "/order/thank-you");
       
       try {
-        // Call your backend (or Lambda) to retrieve payment details
         const res = await fetch(
           "https://q15ur4emu9.execute-api.us-east-2.amazonaws.com/default/confirmStripePayment",
           {
@@ -50,19 +41,16 @@ export default function SuccessPage() {
             body: JSON.stringify({ paymentIntentId }),
           }
         );
-        // ?payment_intent=pi_3SOuFXEDs1Q7k3cU0pqLLrYc&payment_intent_client_secret=pi_3SOuFXEDs1Q7k3cU0pqLLrYc_secret_GPKFQpzZ07LHRs0RE2Bx6pML8&redirect_status=succeeded
         const data = await res.json();
 
-        if (data.error) {
+        if (data && data.error) {
           return router.push("/");
         }
-        if (!data.paymentIntent || !data.paymentIntent.id) return router.push("/");
+        if (data && !data.paymentIntent || !data.paymentIntent.id) return router.push("/");
 
         setPaymentIntent(data.paymentIntent);
-
-      } catch (err) {
-        console.error("Error fetching payment:", err);
-        // router.push("/");
+      } catch {
+        router.push("/");
       }
     };
 
