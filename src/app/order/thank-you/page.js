@@ -5,8 +5,8 @@ import SuccessPage from "../../components/SuccessPage";
 
 export default function ThankYou() {
   return (
-    // <Suspense fallback={<div>Loading details...</div>}>
+    <Suspense fallback={<div>Loading details...</div>}>
       <SuccessPage />
-    // </Suspense>
+    </Suspense>
   );
 }
