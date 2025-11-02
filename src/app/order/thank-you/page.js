@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import SuccessPage from "./SuccessPage";
+import SuccessPage from "../../components/SuccessPage";
 
 export default function ThankYou() {
 
