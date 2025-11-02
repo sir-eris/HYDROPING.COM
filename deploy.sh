@@ -10,6 +10,6 @@ npm install
 npm run build
 
 # --- 3. Sync `out/` folder to S3 ---
-aws s3 sync out/ s3://hydroping.com/ --delete --acl public-read
+# aws s3 sync out/ s3://hydroping.com/ --delete --acl public-read
 
 echo "Deployment complete! 🚀"

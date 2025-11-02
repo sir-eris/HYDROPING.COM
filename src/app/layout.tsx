@@ -44,7 +44,7 @@ export default function RootLayout({
       <header className="fixed z-50 top-0 w-full">
         <div className="w-fit mx-auto mt-6 px-4 text-center flex justify-center items-center bg-white/15 backdrop-blur-xs rounded-4xl border border-white/5">
           <Link href="/" className="flex items-center">
-          <img
+          <Image
             src="/logo.png"
             alt="HydroPing Logo"
             width={50}
@@ -60,7 +60,7 @@ export default function RootLayout({
         <footer className="fixed z-50 bottom-0 left-0 w-full">
           <div className="w-fit mx-auto mb-6 p-4 row-start-3 flex gap-[24px] flex-wrap items-center justify-center bg-white/15 backdrop-blur-xs rounded-4xl border border-white/5">
           <Link href="/" className="flex items-center">
-          <img
+          <Image
             src="/logo.png"
             alt="HydroPing Logo"
             width={30}
@@ -71,7 +71,7 @@ export default function RootLayout({
             className="flex items-center gap-2 hover:underline hover:underline-offset-4"
             href="/setup-guide"
           >
-            <img
+            <Image
               aria-hidden
               src="/file.svg"
               alt="File icon"
@@ -84,7 +84,7 @@ export default function RootLayout({
             className="flex items-center gap-2 hover:underline hover:underline-offset-4"
             href="/examples"
           >
-            <img
+            <Image
               aria-hidden
               src="/window.svg"
               alt="Window icon"
@@ -99,7 +99,7 @@ export default function RootLayout({
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img
+            <Image
               aria-hidden
               src="/globe.svg"
               alt="Globe icon"

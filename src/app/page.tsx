@@ -60,56 +60,56 @@ export default function Home() {
 
       {/* background graphics */}
       <div className="fixed top-0 left-0 w-screen min-h-screen -z-50">
-        <img
+        <Image
           src="/orange.png"
           alt="HydroPing orange colored soil moisture stick"
           width={500}
           height={200}
           className="absolute left-0 md:left-1/6 top-6"
       />
-        <img
+        <Image
           src="/okay.png"
           alt="HydroPing reference image 1"
           width={200}
           height={270}
           className="absolute left-12 top-1/4 -rotate-6"
       />
-      <img
+      <Image
           src="/chart.png"
           alt="HydroPing reference image 2"
           width={400}
           height={300}
           className="absolute left-0 md:left-1/12 bottom-1/6 rotate-6 rounded-4xl p-2 border-[1px] border-gray-300 shadow-xl shadow-gray-400/15"
       />
-      <img
+      <Image
           src="/soil.png"
           alt="HydroPing reference image 3"
           width={150}
           height={150}
           className="absolute right-0 md:right-1/4 top-1/12"
       />
-        <img
+        <Image
           src="/green.png"
           alt="HydroPing green colored soil moisture stick"
           width={600}
           height={500}
           className="absolute bottom-0 right-1/12"
       />
-      <img
+      <Image
           src="/black.png"
           alt="HydroPing black colored soil moisture stick"
           width={300}
           height={300}
           className="absolute top-0 right-6 -rotate-45"
       />
-       <img
+       <Image
           src="/blured_gray.png"
           alt="HydroPing reference image 4"
           width={100}
           height={100}
           className="absolute -bottom-10 left-1/3"
       />
-      <img
+      <Image
           src="/dry.png"
           alt="HydroPing reference image 5"
           width={170}
