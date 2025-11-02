@@ -14,8 +14,10 @@ export default function SuccessPage() {
   useEffect(() => {
     const confirmPayment = async () => {
       const paymentIntentId = searchParams.get("payment_intent");
-
-      if (paymentIntentId) window.history.replaceState({}, "", "/order/thank-you"); else return router.push("/");
+      if (!paymentIntentId) {
+        router.push("/");
+        return;
+      }
 
       try {
         const res = await fetch(
