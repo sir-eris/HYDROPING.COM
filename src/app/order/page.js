@@ -235,16 +235,7 @@ export default function StripeOrder() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            items: [
-              { id: "item1", amount: 1000, quantity: 1, taxCode: "txcd_001" },
-            ],
-            address: {
-              line1: "123 Main St",
-              city: "New York",
-              country: "US",
-            },
-            promo: "PLANTS26",
-            currency: "usd",
+            ...order
           }),
         }
       );
