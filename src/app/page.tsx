@@ -51,7 +51,6 @@ export default function Home() {
               <p className="text-xs text-gray-600 text-center">1.5% contributed to removing CO₂ from atmosphere.</p>
               <p className="text-xs text-gray-600 text-center">Free shipping and return. Cancel for free.</p>
               <p className="text-xs text-gray-600 text-center">U.S. only. Ships every 5000 orders.</p>
-              <p className="text-xs text-gray-600 text-center"><a href="/terms" className="underline underline-offset-2 hover:no-underline">Terms & Conditions</a> apply.</p>
             </div>
           </div>
         </div>

@@ -42,7 +42,7 @@ export default function RootLayout({
       >
         {/* logo */}
       <header className="fixed z-50 top-0 w-full">
-        <div className="w-fit mx-auto mt-6 px-4 text-center flex justify-center items-center bg-white/15 backdrop-blur-xs rounded-4xl border border-white/5">
+        <div className="w-fit mx-auto mt-6 px-4 text-center flex justify-center items-center bg-white/40 backdrop-blur-xs rounded-4xl border border-white/15">
           <Link href="/" className="flex items-center">
           <img
             src="/logo.png"
@@ -57,8 +57,8 @@ export default function RootLayout({
 
         {children}
 
-        <footer className="fixed z-50 bottom-0 left-0 w-full">
-          <div className="w-fit mx-auto mb-6 p-4 row-start-3 flex gap-[24px] flex-wrap items-center justify-center bg-white/15 backdrop-blur-xs rounded-4xl border border-white/5">
+        <footer className="fixed bottom-0 left-0 w-full">
+          <div className="w-fit mx-auto mb-6 p-4 row-start-3 flex gap-[24px] flex-wrap items-center justify-center bg-white/40 backdrop-blur-xs rounded-4xl border border-white/15">
           <Link href="/" className="flex items-center">
           <img
             src="/logo.png"

@@ -391,7 +391,7 @@ export default function StripeOrder() {
                 >
                   {orderTotal != null
                     ? PAYMENT_CURRENCY.symbol + orderTotal / 100 + ".00"
-                    : "..."}{" "}
+                    : "Awaiting tax amount"}{" "}
                   {discountPercent != null && discountPercent > 0
                     ? "(" + promo + " applied)"
                     : null}
@@ -407,6 +407,7 @@ export default function StripeOrder() {
             <p className="mb-6 font-semibold">Shipping Information</p>
             {clientSecret == null ? (
               <div className="px-4">
+                {/* name & phone */}
                 <div className="xl:flex gap-x-4">
                   <div className="w-full xl:w-3/5 h-24">
                     <p className="text-sm px-1">Full Name</p>
@@ -449,6 +450,7 @@ export default function StripeOrder() {
                   </div>
                 </div>
 
+                {/* email */}
                 <div className="w-full h-24">
                   <p className="text-sm px-1">Email Address</p>
                   <input
@@ -469,7 +471,8 @@ export default function StripeOrder() {
                   )}
                 </div>
 
-                <div className="xl:flex gap-x-6">
+                {/* address */}
+                <div className="xl:flex gap-x-6 mb-6">
                   <div className="w-full xl:w-4/5">
                     <div className="w-full h-24 ">
                       <p className="text-sm">Shipping Address</p>
@@ -512,7 +515,7 @@ export default function StripeOrder() {
                       </form>
 
                       {addressError?.length ? (
-                        <p className="text-gray-500 font-bold text-xs text-left mb-4">
+                        <p className="text-red-500 font-bold text-xs text-left mb-4">
                           {addressError}
                         </p>
                       ) : (
@@ -532,6 +535,18 @@ export default function StripeOrder() {
                       className="mb-4 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
                     />
                   </div>
+                </div>
+
+                <div className="xl:flex gpa-x-6">
+                  <p className="text-xs text-gray-600 text-center">
+                    <a
+                      href="/terms"
+                      className="underline underline-offset-2 hover:no-underline"
+                    >
+                      Terms & Conditions
+                    </a>{" "}
+                    apply.
+                  </p>
                 </div>
               </div>
             ) : (
@@ -567,7 +582,7 @@ export default function StripeOrder() {
 
           {clientSecretError && (
             <>
-            <br />
+              <br />
               <p className="font-bold text-sm text-red-600 text-center mx-auto w-fit">
                 Please confirm your information is correct. <br />
                 Be sure to select a formatted address option.
