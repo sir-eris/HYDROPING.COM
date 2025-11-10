@@ -31,11 +31,11 @@ export default function StripeOrder() {
   const [taxAmount, setTaxAmount] = useState(null);
   const [orderTotal, setOrderTotal] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("eris@email.com");
   const [emailError, setEmailError] = useState("");
-  const [name, setName] = useState("");
+  const [name, setName] = useState("eris verne");
   const [nameError, setNameError] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("3108083125");
   const [phoneError, setPhoneError] = useState("");
   const [promo, setPromo] = useState("");
   const [discountPercent, setDiscountPercent] = useState(null);
@@ -43,14 +43,14 @@ export default function StripeOrder() {
     {
       id: "BLACK",
       quantity: 1,
-      amount: 3000,
+      amount: 200,
       taxCode: "txcd_99999999",
       uiColor: "#22223B",
     },
     {
       id: "ORANGE",
       quantity: 0,
-      amount: 3000,
+      amount: 200,
       taxCode: "txcd_99999999",
       uiColor: "#F77F00",
     },
@@ -58,7 +58,7 @@ export default function StripeOrder() {
     {
       id: "BLUE",
       quantity: 0,
-      amount: 3000,
+      amount: 200,
       taxCode: "txcd_99999999",
       uiColor: "#0466C8",
     },
@@ -66,7 +66,7 @@ export default function StripeOrder() {
     {
       id: "GREEN",
       quantity: 0,
-      amount: 3000,
+      amount: 200,
       taxCode: "txcd_99999999",
       uiColor: "#38B000",
     },
@@ -89,8 +89,8 @@ export default function StripeOrder() {
         c.id === colorId ? { ...c, quantity: c.quantity + 1 } : c
       )
     );
-    setTaxAmount(null);
-    setClientSecret(null);
+    // setTaxAmount(null);
+    // setClientSecret(null);
   };
 
   const onRemoveItem = (colorId) => {
@@ -99,7 +99,7 @@ export default function StripeOrder() {
         c.id === colorId ? { ...c, quantity: Math.max(0, c.quantity - 1) } : c
       )
     );
-    setClientSecret(null);
+    // setClientSecret(null);
   };
 
   const handleAddressLine2Change = (e) => {
@@ -196,6 +196,7 @@ export default function StripeOrder() {
 
     if (Object.entries(address).some(([key, value]) => key !== "line2" && value.trim() === "")) {
       setAddressError("Please confirm a formatted option.");
+      errorCount++;
     } else {
       setAddressError("");
     }
@@ -273,76 +274,61 @@ export default function StripeOrder() {
         <main className="relative min-h-screen flex-col items-center justify-center py-24 pb-48">
           <div className="w-4/5 lg:w-1/2 2xl:w-5/12 mx-auto mb-5 pt-12">
             {/* title */}
-            <h1 className="font-bold text-xl lg:text-3xl mb-14 text-center capitalize lg:leading-11">
-              HydroPing Smart Soil Moisture Stick with 5+ years battery and
-              Integrated Wi-Fi.
+            <h1 className="font-bold text-2xl lg:text-3xl mb-4 text-center capitalize lg:leading-11">
+              {/* HydroPing Smart Soil Moisture Stick with 5+ years battery and
+              Integrated Wi-Fi. */}
+              $2 / month / stick
             </h1>
+            <h2 className="mb-10 text-lg lg:text-xl text-center capitalize">
+              Starts after order delivery. 36-month replacement warranty. Manage
+              Subscription inside the app.{" "}
+            </h2>
 
-            {/* options */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 mb-4">
-              {colors.map((color) => (
-                <div key={color.id} className="mb-6">
-                  <div className="text-center font-bold lg:text-lg mb-2">
-                    <p>{color.id}</p>
-                  </div>
-                  <div
-                    className="w-full h-4 mb-4 rounded-4xl"
-                    style={{ backgroundColor: color.uiColor }}
-                  ></div>
-
-                  <div className="flex w-full justify-center items-center gap-x-6 lg:gap-x-8">
-                    <div
-                      onClick={() => onRemoveItem(color.id)}
-                      className="w-7 lg:w-10 h-7 lg:h-10 flex justify-center items-center rounded-full bg-gray-50 border border-white drop-shadow-sm hover:bg-gray-100 hover:border-gray-200 cursor-pointer"
-                    >
-                      -
-                    </div>
-                    <div
-                      onClick={() => onAddItem(color.id)}
-                      className="w-7 lg:w-10 h-7 lg:h-10 flex justify-center items-center rounded-full bg-gray-50 border border-white drop-shadow-sm hover:bg-gray-100 hover:border-gray-200 cursor-pointer"
-                    >
-                      +
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <hr className="border-gray-300 w-full rounded-2xl mx-auto mb-5" />
 
             {/* order summary */}
             <div className="">
               <p className="font-semibold text-gray-700 mb-6">Order Summary</p>
-              {colors.filter((color) => color.quantity > 0).length < 1 && (
-                <p className="text-center">
-                  Please select a quantity of your desired color.
-                </p>
-              )}
-              {colors
-                .filter((color) => color.quantity > 0)
-                .map((color) => (
-                  <div
-                    key={color.id}
-                    className="mb-4 px-4 text-sm flex justify-between items-baseline"
-                  >
-                    <p>{color.id}</p>
-                    <p>
-                      {color.quantity} x {PAYMENT_CURRENCY.symbol}
-                      {color.amount / 100}.00
-                    </p>
-                  </div>
-                ))}
 
-              <div className="mb-4 mt-2 px-4 text-sm flex justify-between items-baseline">
-                <p>Subtotal</p>
-                <p>
-                  {PAYMENT_CURRENCY.symbol}
-                  {colors.reduce((sum, color) => {
-                    return sum + (color.quantity * color.amount) / 100;
-                  }, 0)}
-                  .00
-                </p>
+              {colors.map((color) => (
+                <div
+                  key={color.id}
+                  className="mb-4 lg:px-4 text-sm flex justify-between items-baseline"
+                >
+                  <div className="flex justify-center items-center gap-2">
+                    <div
+                      className="w-4 h-4 rounded-full"
+                      style={{ backgroundColor: color.uiColor }}
+                    ></div>
+                    <p>{color.id}</p>
+                  </div>
+                  <div className="flex justify-center items-center gap-4">
+                    <button
+                      onClick={() => onAddItem(color.id)}
+                      className="underline underline-offset-4 hover:no-underline cursor-pointer"
+                    >
+                      Add
+                    </button>
+                    <button
+                      onClick={() => onRemoveItem(color.id)}
+                      className="underline underline-offset-4 hover:no-underline cursor-pointer"
+                    >
+                      Remove
+                    </button>
+                    <p className="w-4 text-left font-black">{color.quantity}</p>
+                  </div>
+                </div>
+              ))}
+
+              <div className="w-full mb-4 h-16 flex justify-center items-center">
+                {colors.filter((color) => color.quantity > 0).length < 1 && (
+                  <p className="text-center text-xs lg:text-sm font-bold text-gray-400 border border-gray-200 px-4 py-1 rounded-full">
+                    Please select a quantity of your desired color.
+                  </p>
+                )}
               </div>
 
-              <div className="mb-4 mt-2 px-4 text-sm flex justify-between items-baseline">
+              <div className="mb-4 lg:px-4 text-sm flex justify-between items-baseline">
                 <p>Promo Code</p>
                 <div>
                   <span className="pr-2 text-xs">
@@ -364,37 +350,47 @@ export default function StripeOrder() {
                 </div>
               </div>
 
-              <div className="mb-4 mt-2 px-4 text-sm flex justify-between items-baseline">
+              <div className="mb-4 mt-2 lg:px-4 text-sm flex justify-between items-baseline">
                 <p>Shipping & Handling</p>
-                <p>Free</p>
-              </div>
-
-              <div className="mb-4 mt-2 px-4 text-sm flex justify-between items-baseline">
-                <p>Tax</p>
-                <p
-                  className={`transition-opacity duration-300 ${
-                    orderTotal == null ? "opacity-50" : "opacity-100"
-                  }`}
-                >
-                  {taxAmount != null
-                    ? PAYMENT_CURRENCY.symbol + taxAmount / 100 + ".00"
-                    : "Enter shipping details"}
+                <p>
+                  $0.00{" "}
                 </p>
               </div>
 
-              <div className="mb-4 mt-2 px-4 text-sm flex justify-between items-baseline">
+              <div className="mb-4 mt-2 lg:px-4 text-sm flex justify-between items-baseline">
+                <p>Tax</p>
+                <p>
+                  {/* {taxAmount != null
+                    ? PAYMENT_CURRENCY.symbol + taxAmount / 100 + ".00"
+                    : "Enter shipping details"} */}
+                  $0.00
+                </p>
+              </div>
+
+              <div className="mb-4 mt-2 lg:px-4 text-sm flex justify-between items-baseline">
                 <p>Total</p>
-                <p
-                  className={`transition-opacity duration-300 ${
-                    orderTotal == null ? "opacity-50" : "opacity-100"
-                  }`}
-                >
-                  {orderTotal != null
+                <p>
+                  {PAYMENT_CURRENCY.symbol}
+                  {colors.reduce((sum, color) => {
+                    return sum + (color.quantity * color.amount) / 100;
+                  }, 0)}
+                  .00 / month
+                  {/* {orderTotal != null
                     ? PAYMENT_CURRENCY.symbol + orderTotal / 100 + ".00"
                     : "Awaiting tax amount"}{" "}
                   {discountPercent != null && discountPercent > 0
                     ? "(" + promo + " applied)"
-                    : null}
+                    : null} */}
+                </p>
+              </div>
+              <div className="text-right lg:px-4">
+                <p className="text-xs text-gray-600">
+                  <a
+                    href="/terms"
+                    className="underline underline-offset-2 hover:no-underline"
+                  >
+                    Terms & Conditions Apply
+                  </a>{" "}
                 </p>
               </div>
             </div>
@@ -405,8 +401,8 @@ export default function StripeOrder() {
           {/* shipping details */}
           <div className="w-4/5 lg:w-1/2 2xl:w-5/12 mx-auto mb-5">
             <p className="mb-6 font-semibold">Shipping Information</p>
-            {clientSecret == null ? (
-              <div className="px-4">
+            {/* {clientSecret == null ? ( */}
+              <div className="lg:px-4">
                 {/* name & phone */}
                 <div className="xl:flex gap-x-4">
                   <div className="w-full xl:w-3/5 h-24">
@@ -418,7 +414,7 @@ export default function StripeOrder() {
                       // pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
                       value={name}
                       onChange={handleNameChange}
-                      className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
+                      className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1] capitalize"
                     />
 
                     {nameError?.length ? (
@@ -451,7 +447,7 @@ export default function StripeOrder() {
                 </div>
 
                 {/* email */}
-                <div className="w-full h-24">
+                {/* <div className="w-full h-24">
                   <p className="text-sm px-1">Email Address</p>
                   <input
                     id="email"
@@ -469,7 +465,7 @@ export default function StripeOrder() {
                   ) : (
                     ""
                   )}
-                </div>
+                </div> */}
 
                 {/* address */}
                 <div className="xl:flex gap-x-6 mb-6">
@@ -536,42 +532,24 @@ export default function StripeOrder() {
                     />
                   </div>
                 </div>
-
-                <div className="xl:flex gpa-x-6">
-                  <p className="text-xs text-gray-600 text-center">
-                    <a
-                      href="/terms"
-                      className="underline underline-offset-2 hover:no-underline"
-                    >
-                      Terms & Conditions
-                    </a>{" "}
-                    apply.
-                  </p>
-                </div>
               </div>
-            ) : (
+            {/* ) : (
               <div>
                 <p className="mb-1">
                   {name}, {phone}
                 </p>
-                <div className="flex justify-between items-baseline">
+                <div className="w-full">
                   <p>{address.formatted_address}</p>
-                  <button
-                    onClick={handleChangeAddress}
-                    className="underline underline-offset-4 hover:no-underline font-semibold text-blue-500 text-sm"
-                  >
-                    Change
-                  </button>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* submit */}
           <div className="mx-auto w-fit text-center">
             {clientSecret == null ? (
               <button
-                className="font-bold text-xl text-green-500 underline underline-offset-4 hover:no-underline"
+                className="font-bold text-xl text-green-500 underline underline-offset-4 hover:no-underline cursor-pointer"
                 onClick={!isLoading ? getClientSecret : null}
                 disabled={isLoading}
               >
@@ -632,7 +610,7 @@ function PaymentForm({ email }) {
       confirmParams: {
         // Make sure to change this to your payment completion page
         return_url: "https://hydroping.com/order/thank-you",
-        receipt_email: email,
+        // receipt_email: email,
       },
     });
 
@@ -658,7 +636,7 @@ function PaymentForm({ email }) {
       <p className="mb-4 font-semibold">Payment Information</p>
       <PaymentElement
         id="payment-element"
-        className="px-4"
+        className="lg:px-4"
         options={paymentElementOptions}
       />
       <br />
@@ -671,7 +649,7 @@ function PaymentForm({ email }) {
       >
         <span id="button-text" className="block mx-auto">
           <p className="font-bold text-xl text-green-500 underline underline-offset-4 hover:no-underline">
-            {isLoading ? "..." : "Pay now"}
+            {isLoading ? "..." : "Place Order"}
           </p>
         </span>
       </button>
