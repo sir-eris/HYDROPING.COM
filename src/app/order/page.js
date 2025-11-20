@@ -9,6 +9,7 @@ import {
 } from "@stripe/react-stripe-js";
 import dynamic from "next/dynamic";
 import { loadStripe } from "@stripe/stripe-js";
+import { useRouter } from "next/navigation";
 
 const AddressAutofill = dynamic(
   () => import("@mapbox/search-js-react").then((mod) => mod.AddressAutofill),
@@ -592,6 +593,7 @@ export default function StripeOrder() {
 function PaymentForm({ email, clientSecret }) {
   const stripe = useStripe();
   const elements = useElements();
+  const router = useRouter();
 
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -603,22 +605,33 @@ function PaymentForm({ email, clientSecret }) {
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmSetup({
+    const { setupIntent, error } = await stripe.confirmSetup({
       elements,
-      confirmParams: {
-        return_url: "https://hydroping.com/order/thank-you",
-      },
+      // confirmParams: {
+      //   return_url: "https://hydroping.com/order/thank-you",
+      // },
+      redirect: "if_required",
     });
 
     if (error) {
+      setIsLoading(false);
       if (error.type === "card_error" || error.type === "validation_error") {
         setMessage(error.message);
       } else {
         setMessage("An unexpected error occurred.");
       }
+      return;
     }
 
-    setIsLoading(false);
+    if (setupIntent) {
+      setIsLoading(false);
+      console.log(setupIntent);
+      if (setupIntent?.status == "succeeded") {
+        // router.push(`/order/thank-you/${setupIntent.id.split("seti_")[1]}`);
+      }
+    }
+
+    return;
   };
 
   return (
