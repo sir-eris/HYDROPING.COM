@@ -30,15 +30,15 @@ export default function StripeOrder() {
   const [clientSecretError, setClientSecretError] = useState(false);
   const [taxAmount, setTaxAmount] = useState(null);
   const [orderTotal, setOrderTotal] = useState(null);
+  const [discountPercent, setDiscountPercent] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("eris@email.com");
+  const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [name, setName] = useState("eris verne");
+  const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
-  const [phone, setPhone] = useState("3108083125");
+  const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [promo, setPromo] = useState("");
-  const [discountPercent, setDiscountPercent] = useState(null);
   const [colors, setColors] = useState([
     {
       id: "BLACK",
@@ -408,9 +408,9 @@ export default function StripeOrder() {
             <p className="mb-6 font-semibold">Shipping Information</p>
             {/* {clientSecret == null ? ( */}
             <div className="lg:px-4">
-              {/* name & phone */}
               <div className="xl:flex gap-x-4">
-                <div className="w-full xl:w-3/5 h-24">
+                {/* name */}
+                <div className="w-full xl:w-1/3 h-24">
                   <p className="text-sm px-1">Full Name</p>
                   <input
                     id="name"
@@ -430,7 +430,29 @@ export default function StripeOrder() {
                     ""
                   )}
                 </div>
-                <div className="w-full xl:w-2/5 h-24">
+
+                {/* email */}
+                <div className="w-full xl:w-1/3 h-24">
+                  <p className="text-sm px-1">Email</p>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={handleEmailChange}
+                    className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
+                  />
+                  {emailError?.length ? (
+                    <p className="text-red-500 font-bold text-xs text-left">
+                      {emailError}
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                </div>
+
+                {/* phone */}
+                <div className="w-full xl:w-1/3 h-24">
                   <p className="text-sm px-1">Phone Number</p>
                   <input
                     id="phone"
