@@ -8,15 +8,13 @@ import {
   Elements,
 } from "@stripe/react-stripe-js";
 import dynamic from "next/dynamic";
+import { loadStripe } from "@stripe/stripe-js";
 
 const AddressAutofill = dynamic(
   () => import("@mapbox/search-js-react").then((mod) => mod.AddressAutofill),
   { ssr: false }
 );
 
-// Make sure to call loadStripe outside of a component’s render to avoid
-// recreating the Stripe object on every render.
-import { loadStripe } from "@stripe/stripe-js";
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 );
@@ -142,7 +140,7 @@ export default function StripeOrder() {
   };
 
   const handleEditPromo = (e) => {
-    setPromo(e.target.value);
+    setPromo(e.target.value.trim());
     setClientSecret(null);
     setIsLoading(false);
     setTaxAmount(null);
@@ -219,7 +217,10 @@ export default function StripeOrder() {
     // prep order items
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { formatted_address, ..._address } = address;
-    const order = {
+    const payload = {
+      email,
+      name,
+      phone,
       items: colors
         .filter((item) => item.quantity > 0)
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -237,21 +238,25 @@ export default function StripeOrder() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            ...order
+            ...payload
           }),
         }
       );
       const data = await res.json();
 
       if (data.error) {
+        console.log("Error fetching client secret:", data.error);
         setIsLoading(false);
         setClientSecretError(true);
         return;
       }
 
-      setTaxAmount(data.taxAmount);
-      setDiscountPercent(data.discountPercent);
-      setOrderTotal(data.total);
+      // setTaxAmount(data.taxAmount);
+      // setDiscountPercent(data.discountPercent);
+      // setOrderTotal(data.total);
+      
+      console.log(data.customerId);
+
       setTimeout(() => {
         setClientSecret(data.clientSecret);
         setIsLoading(false);
@@ -352,9 +357,7 @@ export default function StripeOrder() {
 
               <div className="mb-4 mt-2 lg:px-4 text-sm flex justify-between items-baseline">
                 <p>Shipping & Handling</p>
-                <p>
-                  $0.00{" "}
-                </p>
+                <p>$0.00 </p>
               </div>
 
               <div className="mb-4 mt-2 lg:px-4 text-sm flex justify-between items-baseline">
@@ -402,52 +405,52 @@ export default function StripeOrder() {
           <div className="w-4/5 lg:w-1/2 2xl:w-5/12 mx-auto mb-5">
             <p className="mb-6 font-semibold">Shipping Information</p>
             {/* {clientSecret == null ? ( */}
-              <div className="lg:px-4">
-                {/* name & phone */}
-                <div className="xl:flex gap-x-4">
-                  <div className="w-full xl:w-3/5 h-24">
-                    <p className="text-sm px-1">Full Name</p>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      // pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
-                      value={name}
-                      onChange={handleNameChange}
-                      className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1] capitalize"
-                    />
+            <div className="lg:px-4">
+              {/* name & phone */}
+              <div className="xl:flex gap-x-4">
+                <div className="w-full xl:w-3/5 h-24">
+                  <p className="text-sm px-1">Full Name</p>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    // pattern="^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$"
+                    value={name}
+                    onChange={handleNameChange}
+                    className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1] capitalize"
+                  />
 
-                    {nameError?.length ? (
-                      <p className="text-red-500 font-bold text-xs text-left">
-                        {nameError}
-                      </p>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                  <div className="w-full xl:w-2/5 h-24">
-                    <p className="text-sm px-1">Phone Number</p>
-                    <input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      pattern="^\+?[0-9\s\-\(\)]{7,15}$"
-                      value={phone}
-                      onChange={handlePhoneChange}
-                      className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
-                    />
-                    {phoneError?.length ? (
-                      <p className="text-red-500 font-bold text-xs text-left">
-                        {phoneError}
-                      </p>
-                    ) : (
-                      ""
-                    )}
-                  </div>
+                  {nameError?.length ? (
+                    <p className="text-red-500 font-bold text-xs text-left">
+                      {nameError}
+                    </p>
+                  ) : (
+                    ""
+                  )}
                 </div>
+                <div className="w-full xl:w-2/5 h-24">
+                  <p className="text-sm px-1">Phone Number</p>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    pattern="^\+?[0-9\s\-\(\)]{7,15}$"
+                    value={phone}
+                    onChange={handlePhoneChange}
+                    className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
+                  />
+                  {phoneError?.length ? (
+                    <p className="text-red-500 font-bold text-xs text-left">
+                      {phoneError}
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
 
-                {/* email */}
-                {/* <div className="w-full h-24">
+              {/* email */}
+              {/* <div className="w-full h-24">
                   <p className="text-sm px-1">Email Address</p>
                   <input
                     id="email"
@@ -467,72 +470,72 @@ export default function StripeOrder() {
                   )}
                 </div> */}
 
-                {/* address */}
-                <div className="xl:flex gap-x-6 mb-6">
-                  <div className="w-full xl:w-4/5">
-                    <div className="w-full h-24 ">
-                      <p className="text-sm">Shipping Address</p>
-                      <form>
-                        <AddressAutofill
-                          onRetrieve={handleAutofillRetrieve}
-                          accessToken="pk.eyJ1Ijoic2lyLWVyaXMiLCJhIjoiY21oNWV5ZzMwMDFrdDJsb29kdW8yNW9wayJ9.3p8YGIkFNWRUIY2d5KlLIg"
-                        >
-                          <input
-                            type="text"
-                            name="address-1"
-                            autoComplete="address-line1"
-                            className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
-                          />
-                          <input
-                            type="text"
-                            name="address-2"
-                            autoComplete="address-line2"
-                            className="invisible w-0 h-0"
-                          />
-                          <input
-                            type="text"
-                            name="city"
-                            autoComplete="address-level2"
-                            className="invisible w-0 h-0"
-                          />
-                          <input
-                            type="text"
-                            name="state"
-                            autoComplete="address-level1"
-                            className="invisible w-0 h-0"
-                          />
-                          <input
-                            type="text"
-                            name="zip"
-                            autoComplete="postal-code"
-                            className="invisible w-0 h-0"
-                          />
-                        </AddressAutofill>
-                      </form>
+              {/* address */}
+              <div className="xl:flex gap-x-6 mb-6">
+                <div className="w-full xl:w-4/5">
+                  <div className="w-full h-24 ">
+                    <p className="text-sm">Shipping Address</p>
+                    <form>
+                      <AddressAutofill
+                        onRetrieve={handleAutofillRetrieve}
+                        accessToken="pk.eyJ1Ijoic2lyLWVyaXMiLCJhIjoiY21oNWV5ZzMwMDFrdDJsb29kdW8yNW9wayJ9.3p8YGIkFNWRUIY2d5KlLIg"
+                      >
+                        <input
+                          type="text"
+                          name="address-1"
+                          autoComplete="address-line1"
+                          className="mb-1 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
+                        />
+                        <input
+                          type="text"
+                          name="address-2"
+                          autoComplete="address-line2"
+                          className="invisible w-0 h-0"
+                        />
+                        <input
+                          type="text"
+                          name="city"
+                          autoComplete="address-level2"
+                          className="invisible w-0 h-0"
+                        />
+                        <input
+                          type="text"
+                          name="state"
+                          autoComplete="address-level1"
+                          className="invisible w-0 h-0"
+                        />
+                        <input
+                          type="text"
+                          name="zip"
+                          autoComplete="postal-code"
+                          className="invisible w-0 h-0"
+                        />
+                      </AddressAutofill>
+                    </form>
 
-                      {addressError?.length ? (
-                        <p className="text-red-500 font-bold text-xs text-left mb-4">
-                          {addressError}
-                        </p>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="w-full xl:w-1/5">
-                    <p className="text-sm px-1">Apt, Suit, Unit</p>
-                    <input
-                      id="line2"
-                      name="line2"
-                      type="text"
-                      value={address.line2}
-                      onChange={handleAddressLine2Change}
-                      className="mb-4 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
-                    />
+                    {addressError?.length ? (
+                      <p className="text-red-500 font-bold text-xs text-left mb-4">
+                        {addressError}
+                      </p>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
+
+                <div className="w-full xl:w-1/5">
+                  <p className="text-sm px-1">Apt, Suit, Unit</p>
+                  <input
+                    id="line2"
+                    name="line2"
+                    type="text"
+                    value={address.line2}
+                    onChange={handleAddressLine2Change}
+                    className="mb-4 rounded-xl w-full px-4 py-3 bg-[#f1f1f1]"
+                  />
+                </div>
               </div>
+            </div>
             {/* ) : (
               <div>
                 <p className="mb-1">
@@ -553,7 +556,7 @@ export default function StripeOrder() {
                 onClick={!isLoading ? getClientSecret : null}
                 disabled={isLoading}
               >
-                {isLoading ? "..." : "Continue to Pay"}
+                {isLoading ? "..." : "Continue"}
               </button>
             ) : null}
           </div>
@@ -562,8 +565,7 @@ export default function StripeOrder() {
             <>
               <br />
               <p className="font-bold text-sm text-red-600 text-center mx-auto w-fit">
-                Please confirm your information is correct. <br />
-                Be sure to select a formatted address option.
+                Please confirm your information is correct.
               </p>
             </>
           )}
@@ -576,7 +578,7 @@ export default function StripeOrder() {
                   stripe={stripePromise}
                   options={{ appearance: { theme: "flat" }, clientSecret }}
                 >
-                  <PaymentForm email={email} />
+                  <PaymentForm email={email} clientSecret={clientSecret} />
                 </Elements>
               </div>
             </>
@@ -587,7 +589,7 @@ export default function StripeOrder() {
   );
 }
 
-function PaymentForm({ email }) {
+function PaymentForm({ email, clientSecret }) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -597,48 +599,41 @@ function PaymentForm({ email }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!stripe || !elements) {
-      // Stripe.js hasn't yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      return;
-    }
+    if (!stripe || !elements) return;
 
     setIsLoading(true);
 
-    const { error } = await stripe.confirmPayment({
+    const { error } = await stripe.confirmSetup({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
         return_url: "https://hydroping.com/order/thank-you",
-        // receipt_email: email,
       },
     });
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message);
-    } else {
-      console.log(error);
-      setMessage("An unexpected error occurred.");
+    if (error) {
+      if (error.type === "card_error" || error.type === "validation_error") {
+        setMessage(error.message);
+      } else {
+        setMessage("An unexpected error occurred.");
+      }
     }
 
     setIsLoading(false);
   };
 
-  const paymentElementOptions = { layout: "accordion" };
-
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <p className="mb-4 font-semibold">Payment Information</p>
+
       <PaymentElement
         id="payment-element"
         className="lg:px-4"
-        options={paymentElementOptions}
+        options={{
+          layout: "accordion",
+          mode: "setup",
+        }}
       />
+
       <br />
       <br />
 
@@ -649,13 +644,13 @@ function PaymentForm({ email }) {
       >
         <span id="button-text" className="block mx-auto">
           <p className="font-bold text-xl text-green-500 underline underline-offset-4 hover:no-underline">
-            {isLoading ? "..." : "Place Order"}
+            {isLoading ? "..." : "Save Payment Info"}
           </p>
         </span>
       </button>
 
       <br />
-      {/* Show any error or success messages */}
+
       {message && (
         <div
           id="payment-message"
@@ -667,3 +662,85 @@ function PaymentForm({ email }) {
     </form>
   );
 }
+
+
+// function PaymentForm({ email }) {
+//   const stripe = useStripe();
+//   const elements = useElements();
+
+//   const [message, setMessage] = useState(null);
+//   const [isLoading, setIsLoading] = useState(false);
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (!stripe || !elements) {
+//       // Stripe.js hasn't yet loaded.
+//       // Make sure to disable form submission until Stripe.js has loaded.
+//       return;
+//     }
+
+//     setIsLoading(true);
+
+//     const { error } = await stripe.confirmPayment({
+//       elements,
+//       confirmParams: {
+//         // Make sure to change this to your payment completion page
+//         return_url: "https://hydroping.com/order/thank-you",
+//         // receipt_email: email,
+//       },
+//     });
+
+//     // This point will only be reached if there is an immediate error when
+//     // confirming the payment. Otherwise, your customer will be redirected to
+//     // your `return_url`. For some payment methods like iDEAL, your customer will
+//     // be redirected to an intermediate site first to authorize the payment, then
+//     // redirected to the `return_url`.
+//     if (error.type === "card_error" || error.type === "validation_error") {
+//       setMessage(error.message);
+//     } else {
+//       console.log(error);
+//       setMessage("An unexpected error occurred.");
+//     }
+
+//     setIsLoading(false);
+//   };
+
+//   const paymentElementOptions = { layout: "accordion" };
+
+//   return (
+//     <form id="payment-form" onSubmit={handleSubmit}>
+//       <p className="mb-4 font-semibold">Payment Information</p>
+//       <PaymentElement
+//         id="payment-element"
+//         className="lg:px-4"
+//         options={paymentElementOptions}
+//       />
+//       <br />
+//       <br />
+
+//       <button
+//         disabled={isLoading || !stripe || !elements}
+//         id="submit"
+//         className="block w-fit mx-auto text-center"
+//       >
+//         <span id="button-text" className="block mx-auto">
+//           <p className="font-bold text-xl text-green-500 underline underline-offset-4 hover:no-underline">
+//             {isLoading ? "..." : "Place Order"}
+//           </p>
+//         </span>
+//       </button>
+
+//       <br />
+//       {/* Show any error or success messages */}
+//       {message && (
+//         <div
+//           id="payment-message"
+//           className="text-center mb-6 text-red-500 font-black w-fit mx-auto text-sm"
+//         >
+//           Oh! {message}
+//         </div>
+//       )}
+//     </form>
+//   );
+// }

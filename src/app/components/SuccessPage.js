@@ -11,40 +11,40 @@ export default function SuccessPage() {
   const router = useRouter();
   const [paymentIntent, setPaymentIntent] = useState(null);
 
-  useEffect(() => {
-    const confirmPayment = async () => {
-      const paymentIntentId = searchParams.get("payment_intent");
-      if (!paymentIntentId) {
-        router.push("/");
-        return;
-      }
+  // useEffect(() => {
+  //   const confirmPayment = async () => {
+  //     const paymentIntentId = searchParams.get("payment_intent");
+  //     if (!paymentIntentId) {
+  //       router.push("/");
+  //       return;
+  //     }
 
-      try {
-        const res = await fetch(
-          "https://q15ur4emu9.execute-api.us-east-2.amazonaws.com/default/confirmStripePayment",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ paymentIntentId }),
-          }
-        );
-        const data = await res.json();
+  //     try {
+  //       const res = await fetch(
+  //         "https://q15ur4emu9.execute-api.us-east-2.amazonaws.com/default/confirmStripePayment",
+  //         {
+  //           method: "POST",
+  //           headers: { "Content-Type": "application/json" },
+  //           body: JSON.stringify({ paymentIntentId }),
+  //         }
+  //       );
+  //       const data = await res.json();
 
-        if (data && data.error) {
-          return router.push("/");
-        }
-        if (data && (!data.paymentIntent || !data.paymentIntent.id)) {
-          return router.push("/");
-        }
+  //       if (data && data.error) {
+  //         return router.push("/");
+  //       }
+  //       if (data && (!data.paymentIntent || !data.paymentIntent.id)) {
+  //         return router.push("/");
+  //       }
 
-        setPaymentIntent(data.paymentIntent);
-      } catch {
-        return router.push("/");
-      }
-    };
+  //       setPaymentIntent(data.paymentIntent);
+  //     } catch {
+  //       return router.push("/");
+  //     }
+  //   };
 
-    confirmPayment();
-  }, [router, searchParams]);
+  //   confirmPayment();
+  // }, [router, searchParams]);
 
   return (
     <div className="relative">
